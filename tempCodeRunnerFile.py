@@ -214,3 +214,4 @@ tuner = Tuner(HYPERPARAMETERS,
 results = tuner.minimize()
 
 mlflow.pytorch.log_model(model, "model")
+

@@ -6,6 +6,8 @@ from torch_geometric.data import Dataset, Data
 import numpy as np 
 import os
 from tqdm import tqdm
+import torch.serialization
+torch.serialization.add_safe_globals([Data])
 
 print(f"Torch version: {torch.__version__}")
 print(f"Cuda available: {torch.cuda.is_available()}")
@@ -159,12 +161,20 @@ class MoleculeDataset(Dataset):
             - Is not needed for PyG's InMemoryDataset
         """
         if self.test:
-            data = torch.load(os.path.join(self.processed_dir, 
-                                 f'data_test_{idx}.pt'))
+            data = torch.load(
+                os.path.join(self.processed_dir, f'data_test_{idx}.pt'),
+                weights_only=False
+            )
         else:
-            data = torch.load(os.path.join(self.processed_dir, 
-                                 f'data_{idx}.pt'))   
+            data = torch.load(
+                os.path.join(self.processed_dir, f'data_{idx}.pt'),
+                weights_only=False
+            )
         return data
 
-
+dataset = MoleculeDataset(root = "data/", filename="HIV.csv")
+print(dataset[0].edge_index.t())
+print(dataset[0].x)
+print(dataset[0].edge_attr)
+print(dataset[0].y)
 
